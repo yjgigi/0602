@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>0531 WebAR</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        overflow: hidden;
+      }
+      canvas {
+        width: 100%;
+        height: 100%;
+        background-color: transparent !important;
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="unity-canvas"></canvas>
+    <video id="video-preview" autoplay playsinline muted style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1;"></video>
+
+
+    <script src="Build/0531webar.loader.js"></script>
+    <script>
+      createUnityInstance(document.querySelector("#unity-canvas"), {
+        dataUrl: "Build/0531webar.data",
+        frameworkUrl: "Build/0531webar.framework.js",
+        codeUrl: "Build/0531webar.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "MyCompany",
+        productName: "0531WebAR",
+        productVersion: "1.0",
+        backgroundColor: [0, 0, 0, 0]
+      });
+    </script>
+  </body>
+</html>
