@@ -2,30 +2,48 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+
     <title>0531 WebAR</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <style>
-      html, body {
-        margin: 0;
-        padding: 0;
-        background: transparent;
-        overflow: hidden;
-      }
-      canvas {
-        width: 100%;
-        height: 100%;
-        background-color: transparent !important;
-        display: block;
-        position: absolute;
-        top: 0;
-        left: 0;
-      }
-    </style>
+      <style>
+        html, body {
+          margin: 0;
+          padding: 0;
+          overflow: hidden;
+          background: black;
+          width: 100vw;
+          height: 100vh;
+        }
+      
+        #video-preview {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          object-fit: cover;
+        }
+
+      
+        #unity-canvas {
+          position: fixed;
+          top: 0;
+          left: 0;
+          z-index: 1;
+          width: 100vw;
+          height: 100vh;
+          background-color: transparent !important;
+          display: block;
+        }
+      
+      </style>
+    
   </head>
   <body>
+    <video id="video-preview" autoplay playsinline muted></video>
     <canvas id="unity-canvas"></canvas>
-    <video id="video-preview" autoplay playsinline muted style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1;"></video>
-
 
     <script src="Build/0531webar.loader.js"></script>
     <script>
@@ -40,5 +58,41 @@
         backgroundColor: [0, 0, 0, 0]
       });
     </script>
+
+    <script>
+      const video = document.getElementById("video-preview");
+
+      navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: { ideal: "environment" },
+        },
+        audio: false
+      })
+      .then((stream) => {
+        video.srcObject = stream;
+
+        video.onloadedmetadata = () => {
+          console.log("相機原始尺寸:", video.videoWidth, video.videoHeight);
+
+          const canvas = document.getElementById("unity-canvas");
+
+          function resizeCanvas() {
+            canvas.style.width = "100vw";
+            canvas.style.height = "100vh";
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+          }
+
+          window.addEventListener("resize", resizeCanvas);
+          resizeCanvas(); // 頁面初始就執行一次
+        };
+      })
+      .catch((err) => {
+        console.error("相機啟動失敗:", err);
+      });
+    </script>
+
+
+
   </body>
 </html>
